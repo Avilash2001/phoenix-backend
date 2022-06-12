@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @unique @default(autoincrement())
+  email    String    @unique
+  name     String?
+  password String?
+  posts    Post[]
+  comments Comment[]
+  likes    Like[]
+  strikes  Strike[]
+
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  viewCount Int       @default(0)
+  author    User?     @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  comments  Comment[]
+  likes     Like[]
+  Strike    Strike[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  userName  String?
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+  Strike    Strike[]
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  userName  String?
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+}
+
+model Strike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+  commment  Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?
+}
