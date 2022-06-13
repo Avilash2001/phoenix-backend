@@ -148,8 +148,6 @@ const like = async (req: Request, res: Response) => {
       return res.status(400).json({ error: true, message: "User not found!" });
     }
 
-    console.log(post);
-
     let likeId = 0;
 
     post &&

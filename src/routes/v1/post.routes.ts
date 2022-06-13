@@ -1,13 +1,19 @@
 import { Router } from "express";
 import postController from "../../controllers/post.controller";
+import checkToken from "../../middlewares/authJWT.middleware";
+import postValidator from "../../validators/post.validator";
 
 const router = Router();
 
-router.post("/", postController.add);
-router.get("/", postController.get);
-router.patch("/:id", postController.update);
-router.delete("/:id", postController.remove);
-router.post("/:id/like", postController.like);
-router.post("/:id/comment", postController.comment);
+router.post("/", postValidator.validateAdd, postController.add);
+router.get("/", checkToken, postController.get);
+router.patch("/:id", postValidator.validateUpdate, postController.update);
+router.delete("/:id", checkToken, postController.remove);
+router.post("/:id/like", postValidator.validateLike, postController.like);
+router.post(
+  "/:id/comment",
+  postValidator.validateComment,
+  postController.comment
+);
 
 export default router;

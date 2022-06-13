@@ -1,4 +1,5 @@
 import cors from "cors";
+import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import routes from "./routes/v1";
@@ -8,6 +9,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 app.use("/api/v1", routes);
+require("dotenv").config();
 
 // app.get('/drafts', async (req, res) => {
 //   const posts = await prisma.post.findMany({
