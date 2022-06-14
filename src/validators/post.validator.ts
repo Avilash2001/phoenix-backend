@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import checkToken from "../middlewares/authJWT.middleware";
 
 const validateAdd = [
@@ -23,6 +23,11 @@ const validateAdd = [
 ];
 
 const validateUpdate = [
+  param("id")
+    .exists()
+    .withMessage("Id is required")
+    .isInt()
+    .withMessage("Id must be an integer"),
   body("title")
     .optional()
     .isLength({ min: 3 })
@@ -38,6 +43,11 @@ const validateUpdate = [
 ];
 
 const validateLike = [
+  param("id")
+    .exists()
+    .withMessage("Id is required")
+    .isInt()
+    .withMessage("Id must be an integer"),
   body("user_id")
     .exists()
     .withMessage("User id is required")
@@ -47,6 +57,11 @@ const validateLike = [
 ];
 
 const validateComment = [
+  param("id")
+    .exists()
+    .withMessage("Id is required")
+    .isInt()
+    .withMessage("Id must be an integer"),
   body("user_id")
     .exists()
     .withMessage("User id is required")

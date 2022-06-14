@@ -103,13 +103,25 @@ const get = async (req: Request, res: Response) => {
         where: {
           id: Number(id),
         },
+
+        include: {
+          posts: true,
+          followers: true,
+          following: true,
+        },
       });
       return res
         .status(200)
         .json({ error: false, message: "User found successfully!", user });
     }
 
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        posts: true,
+        followers: true,
+        following: true,
+      },
+    });
 
     return res
       .status(200)
@@ -240,6 +252,73 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
+const follow = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.body;
+
+    const follower = await prisma.user.findFirst({
+      where: {
+        id: Number(user_id),
+      },
+    });
+
+    if (!follower) {
+      return res.status(400).json({ error: true, message: "User not found!" });
+    }
+
+    const following = await prisma.user.findFirst({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!following) {
+      return res.status(400).json({ error: true, message: "User not found!" });
+    }
+
+    const followCheck = await prisma.follows.findFirst({
+      where: {
+        followerId: Number(user_id),
+        followingId: Number(id),
+      },
+    });
+
+    if (followCheck) {
+      await prisma.follows.delete({
+        where: {
+          id: followCheck.id,
+        },
+      });
+
+      return res
+        .status(200)
+        .json({ error: false, message: "Unfollow successful!" });
+    }
+
+    await prisma.follows.create({
+      data: {
+        follower: {
+          connect: {
+            id: Number(user_id),
+          },
+        },
+        following: {
+          connect: {
+            id: Number(id),
+          },
+        },
+      },
+    });
+
+    return res
+      .status(200)
+      .json({ error: false, message: "Follow successful!" });
+  } catch (e: any) {
+    return res.status(500).json({ error: true, message: e.message });
+  }
+};
+
 export default {
   add,
   get,
@@ -248,4 +327,5 @@ export default {
   login,
   refresh,
   logout,
+  follow,
 };

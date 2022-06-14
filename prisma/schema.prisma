@@ -20,6 +20,16 @@ model User {
   likes      Like[]
   strikes    Strike[]
   token      Token[]
+  following  Follows[] @relation("follower")
+  followers  Follows[] @relation("following")
+}
+
+model Follows {
+  id          Int  @id @default(autoincrement())
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int
 }
 
 model Token {

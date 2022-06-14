@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import checkToken from "../middlewares/authJWT.middleware";
 
 const validateRegister = [
@@ -63,9 +63,24 @@ const validateRefresh = [
   checkToken,
 ];
 
+const validateFollow = [
+  param("id")
+    .exists()
+    .withMessage("Id is required")
+    .isInt()
+    .withMessage("Id must be an integer"),
+  body("user_id")
+    .exists()
+    .withMessage("User id is required")
+    .isInt()
+    .withMessage("User id must be an integer"),
+  checkToken,
+];
+
 export default {
   validateRegister,
   validateLogin,
   validateUpdate,
   validateRefresh,
+  validateFollow,
 };

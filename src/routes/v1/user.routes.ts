@@ -12,5 +12,6 @@ router.patch("/:id", userValidator.validateUpdate, userController.update);
 router.delete("/:id", checkToken, userController.remove);
 router.post("/logout", userValidator.validateRefresh, userController.logout);
 router.post("/refresh", userValidator.validateRefresh, userController.refresh);
+router.post("/:id/follow", userValidator.validateFollow, userController.follow);
 
 export default router;
