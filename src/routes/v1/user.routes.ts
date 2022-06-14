@@ -13,5 +13,6 @@ router.delete("/:id", checkToken, userController.remove);
 router.post("/logout", userValidator.validateRefresh, userController.logout);
 router.post("/refresh", userValidator.validateRefresh, userController.refresh);
 router.post("/:id/follow", userValidator.validateFollow, userController.follow);
+router.get("/:id/feed", userController.feed);
 
 export default router;

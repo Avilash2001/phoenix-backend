@@ -8,20 +8,22 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @unique @default(autoincrement())
-  email      String    @unique
-  name       String?
-  password   String?
-  profilePic String?
-  coverPic   String?
-  bio        String?
-  posts      Post[]
-  comments   Comment[]
-  likes      Like[]
-  strikes    Strike[]
-  token      Token[]
-  following  Follows[] @relation("follower")
-  followers  Follows[] @relation("following")
+  id             Int       @id @unique @default(autoincrement())
+  email          String    @unique
+  name           String?
+  password       String?
+  profilePic     String?
+  coverPic       String?
+  bio            String?
+  posts          Post[]
+  comments       Comment[]
+  likes          Like[]
+  strikes        Strike[]
+  token          Token[]
+  following      Follows[] @relation("follower")
+  followerCount  Int       @default(0)
+  followers      Follows[] @relation("following")
+  followingCount Int       @default(0)
 }
 
 model Follows {

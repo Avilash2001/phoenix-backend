@@ -7,6 +7,8 @@ CREATE TABLE `User` (
     `profilePic` VARCHAR(191) NULL,
     `coverPic` VARCHAR(191) NULL,
     `bio` VARCHAR(191) NULL,
+    `followerCount` INTEGER NOT NULL DEFAULT 0,
+    `followingCount` INTEGER NOT NULL DEFAULT 0,
 
     UNIQUE INDEX `User_id_key`(`id`),
     UNIQUE INDEX `User_email_key`(`email`),

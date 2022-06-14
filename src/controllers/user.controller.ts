@@ -43,13 +43,15 @@ const login = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ error: true, message: "User not found!" });
+      return res
+        .status(400)
+        .json({ error: true, message: "Credentials are incorrect!" });
     }
 
     if (!bcrypt.compareSync(password, user.password!)) {
       return res
         .status(400)
-        .json({ error: true, message: "Password is incorrect!" });
+        .json({ error: true, message: "Credentials are incorrect!" });
     }
 
     const userData = {
@@ -291,6 +293,24 @@ const follow = async (req: Request, res: Response) => {
         },
       });
 
+      await prisma.user.update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          followerCount: following.followerCount - 1,
+        },
+      });
+
+      await prisma.user.update({
+        where: {
+          id: Number(user_id),
+        },
+        data: {
+          followingCount: follower.followingCount - 1,
+        },
+      });
+
       return res
         .status(200)
         .json({ error: false, message: "Unfollow successful!" });
@@ -311,9 +331,133 @@ const follow = async (req: Request, res: Response) => {
       },
     });
 
+    await prisma.user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        followerCount: following.followerCount + 1,
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        id: Number(user_id),
+      },
+      data: {
+        followingCount: follower.followingCount + 1,
+      },
+    });
+
     return res
       .status(200)
       .json({ error: false, message: "Follow successful!" });
+  } catch (e: any) {
+    return res.status(500).json({ error: true, message: e.message });
+  }
+};
+
+const feed = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        posts: true,
+        followers: true,
+        following: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: true, message: "User not found!" });
+    }
+
+    const following = await prisma.follows.findMany({
+      where: {
+        followerId: Number(id),
+      },
+      select: {
+        followingId: true,
+      },
+    });
+
+    // Get all followingIds and put it in a array of numbers
+    const followingIds = following.map((follow) => follow.followingId);
+
+    const getPostsbyFollowingIds = await prisma.post.findMany({
+      where: {
+        authorId: {
+          in: followingIds,
+        },
+        published: true,
+      },
+      include: {
+        author: true,
+        likes: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const popularUsers = await prisma.user.findMany({
+      orderBy: {
+        followerCount: "desc",
+      },
+      take: 10,
+    });
+
+    const popularUserIds = popularUsers.map((user) => user.id);
+
+    const popularPosts = await prisma.post.findMany({
+      where: {
+        authorId: {
+          in: popularUserIds,
+        },
+        published: true,
+      },
+      include: {
+        author: true,
+        likes: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const remainingPosts = await prisma.post.findMany({
+      include: {
+        author: true,
+        likes: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const allPosts = [
+      ...getPostsbyFollowingIds,
+      ...popularPosts,
+      ...remainingPosts,
+    ];
+
+    // remove duplicates
+    const feed = allPosts.filter(
+      (v, i, a) => a.findIndex((v2) => v2.id === v.id) === i
+    );
+
+    res.json({
+      error: false,
+      message: "Feed found successfully!",
+      feed,
+    });
   } catch (e: any) {
     return res.status(500).json({ error: true, message: e.message });
   }
@@ -328,4 +472,5 @@ export default {
   refresh,
   logout,
   follow,
+  feed,
 };

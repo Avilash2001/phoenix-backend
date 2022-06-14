@@ -1,5 +1,6 @@
 import { body, param } from "express-validator";
 import checkToken from "../middlewares/authJWT.middleware";
+import checkValidatorErrors from "../middlewares/check.middleware";
 
 const validateAdd = [
   body("title")
@@ -20,6 +21,7 @@ const validateAdd = [
     .isInt()
     .withMessage("Author id must be an integer"),
   checkToken,
+  checkValidatorErrors,
 ];
 
 const validateUpdate = [
@@ -40,6 +42,7 @@ const validateUpdate = [
     .isInt()
     .withMessage("Author id must be an integer"),
   checkToken,
+  checkValidatorErrors,
 ];
 
 const validateLike = [
@@ -54,6 +57,7 @@ const validateLike = [
     .isInt()
     .withMessage("User id must be an integer"),
   checkToken,
+  checkValidatorErrors,
 ];
 
 const validateComment = [
@@ -73,6 +77,7 @@ const validateComment = [
     .isString()
     .withMessage("Content must be a string"),
   checkToken,
+  checkValidatorErrors,
 ];
 
 export default {
