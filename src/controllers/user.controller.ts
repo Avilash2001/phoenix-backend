@@ -40,6 +40,11 @@ const login = async (req: Request, res: Response) => {
       where: {
         email,
       },
+      include: {
+        posts: true,
+        followers: true,
+        following: true,
+      },
     });
 
     if (!user) {
@@ -458,6 +463,13 @@ const feed = async (req: Request, res: Response) => {
       message: "Feed found successfully!",
       feed,
     });
+  } catch (e: any) {
+    return res.status(500).json({ error: true, message: e.message });
+  }
+};
+
+const popularUsers = async (req: Request, res: Response) => {
+  try {
   } catch (e: any) {
     return res.status(500).json({ error: true, message: e.message });
   }

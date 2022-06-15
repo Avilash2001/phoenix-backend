@@ -40,6 +40,7 @@ const get = async (req: Request, res: Response) => {
         include: {
           likes: true,
           comments: true,
+          author: true,
         },
       });
       return res
@@ -55,6 +56,7 @@ const get = async (req: Request, res: Response) => {
         include: {
           likes: true,
           comments: true,
+          author: true,
         },
       });
 
@@ -67,6 +69,7 @@ const get = async (req: Request, res: Response) => {
       include: {
         likes: true,
         comments: true,
+        author: true,
       },
     });
 

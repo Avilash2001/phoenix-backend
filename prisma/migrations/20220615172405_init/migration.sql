@@ -9,6 +9,8 @@ CREATE TABLE `User` (
     `bio` VARCHAR(191) NULL,
     `followerCount` INTEGER NOT NULL DEFAULT 0,
     `followingCount` INTEGER NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `User_id_key`(`id`),
     UNIQUE INDEX `User_email_key`(`email`),
@@ -20,6 +22,8 @@ CREATE TABLE `Follows` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `followerId` INTEGER NOT NULL,
     `followingId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -30,6 +34,8 @@ CREATE TABLE `Token` (
     `token` VARCHAR(500) NOT NULL,
     `refreshToken` VARCHAR(500) NOT NULL,
     `userId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Token_token_key`(`token`),
     UNIQUE INDEX `Token_refreshToken_key`(`refreshToken`),

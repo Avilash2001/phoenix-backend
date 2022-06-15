@@ -11,8 +11,8 @@ const validateRegister = [
   body("password")
     .exists()
     .withMessage("Password is required")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long"),
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
   body("name").exists().withMessage("Name is required").isLength({ min: 3 }),
   body("profilePic")
     .optional()
@@ -35,8 +35,8 @@ const validateLogin = [
   body("password")
     .exists()
     .withMessage("Password is required")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long"),
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
   checkValidatorErrors,
 ];
 
@@ -44,8 +44,8 @@ const validateUpdate = [
   body("email").optional().isEmail().withMessage("Email must be valid"),
   body("password")
     .optional()
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long"),
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
   body("name").optional().isLength({ min: 3 }),
   body("profilePic")
     .optional()

@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/src/index.js",
+    "build": "rm -r dist && tsc",
     "dev": "nodemon src/index.ts --ignore ./dist/"
   },
   "dependencies": {
